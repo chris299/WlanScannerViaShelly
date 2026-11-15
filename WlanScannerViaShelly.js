@@ -9,15 +9,20 @@
 // ==== Konfiguration ====
 //const shellyIPs = ['192.168.246.166']
 
-const shellyIPs = ['192.168.246.166', '192.168.246.97', '192.168.246.135', '192.168.246.164']; // weitere IPs hier einfügen
-const intervalSeconds = 15;
+// 192.168.246.97 (PlusUni_Siedle) bewusst nicht mehr: Ein WiFi.Scan kann die
+// WLAN-Verbindung des Shelly kurz unterbrechen, und an diesem Uni hängt die
+// Türlogik. Generell nur Shellys ohne eigene Skripte oder Automatik nehmen.
+const shellyIPs = ['192.168.246.166', '192.168.246.135', '192.168.246.164']; // weitere IPs hier einfügen
+// Früher alle 15 s. Jeder Scan stört das WLAN des Shelly kurz, und für
+// Mittelwerte über Tage genügt ein Scan alle paar Minuten.
+const intervalMinutes = 5;
 const basePath = '0_userdata.0.ShellyWLANScans';
 
 // interne Cache für Name→IP und Scan
 const shellyInfo = {}; // { name: { ip, rawData, resultList } }
 
 // ==== Initialisierung ====
-schedule(`*/${intervalSeconds} * * * * *`, () => {
+schedule(`*/${intervalMinutes} * * * *`, () => {
     shellyIPs.forEach(scanShelly);
 });
 
